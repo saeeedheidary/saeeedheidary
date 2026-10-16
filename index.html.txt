@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#111315">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ماشین‌حساب ۲۰">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href='data:application/manifest+json,{"name":"ماشین‌حساب ۲۰ رقمی","short_name":"ماشین‌حساب","start_url":".","display":"standalone","orientation":"portrait","background_color":"%23111315","theme_color":"%23111315","lang":"fa","dir":"rtl","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 192 192%27%3E%3Crect width=%27192%27 height=%27192%27 rx=%2732%27 fill=%27%23151719%27/%3E%3Ctext x=%2796%27 y=%27118%27 font-size=%2780%27 text-anchor=%27middle%27 fill=%27%23dce8dc%27 font-family=%27monospace%27%3E20%3C/text%3E%3C/svg%3E","sizes":"192x192","type":"image/svg+xml","purpose":"any maskable"}]}'>
+<title>ماشین‌حساب ۲۰ رقمی</title>
+<style>
+:root{--bg:#e5e6e4;--black:#151719;--blue:#607ebd;--red:#a9484d;--screen:#dce8dc;--op:#e08a2e;--op-dark:#b96f1c;--eq:#2e8b57;--eq-dark:#1f6b3f}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100dvh;background:#f7f7f5;display:flex;justify-content:center;align-items:center;font-family:Tahoma,Arial,sans-serif;color:#fff}
+.calc{width:min(100vw,480px);min-height:100dvh;background:var(--bg);padding:18px 14px 22px;display:flex;flex-direction:column;gap:12px;box-shadow:0 0 35px #0001}
+.top{background:#111315;border-radius:12px 12px 4px 4px;padding:16px 14px 12px}
+.brand{font-weight:bold;letter-spacing:1px;font-size:14px;color:#aeb3b7;display:flex;justify-content:space-between}
+.brand small{font-weight:normal;font-size:10px}
+.sub{font-size:10px;color:#9aa0a4;text-align:left;margin-top:8px}
+.screen{margin-top:12px;height:100px;background:var(--screen);border:4px solid #303536;border-radius:5px;color:#17211a;display:flex;flex-direction:column;justify-content:center;padding:8px 10px;overflow:hidden}
+.history{font-size:12px;min-height:20px;color:#647067;text-align:left;white-space:nowrap;overflow:hidden}
+.display{font-family:ui-monospace,monospace;direction:ltr;text-align:right;font-size:clamp(24px,7vw,36px);font-weight:500;white-space:nowrap;overflow:hidden;letter-spacing:-1px}
+.status{font-size:10px;color:#9aa0a4;display:flex;justify-content:space-between;margin-top:8px}
+.keys{display:grid;grid-template-columns:repeat(5,1fr);grid-auto-rows:minmax(54px,1fr);gap:8px;flex:1}
+.key{border:0;border-radius:9px;background:#17191b;color:#e5e9ec;font-size:clamp(18px,5vw,25px);box-shadow:0 3px 0 #a8aaa8, inset 0 1px #ffffff14;cursor:pointer;touch-action:manipulation}
+.key:active{transform:translateY(2px);box-shadow:0 1px 0 #a8aaa8}
+.blue{background:var(--blue)}
+.red{background:var(--red);font-size:27px}
+.light{background:#33383a}
+.zero{grid-column:span 2}
+/* دکمه‌های عملگر بزرگ و رنگی */
+.op{background:var(--op);color:#fff;font-size:clamp(24px,7vw,34px);font-weight:bold;box-shadow:0 4px 0 var(--op-dark), inset 0 1px #ffffff22}
+.op:active{transform:translateY(3px);box-shadow:0 1px 0 var(--op-dark)}
+.equals{background:var(--eq);color:#fff;font-size:clamp(24px,7vw,34px);font-weight:bold;box-shadow:0 4px 0 var(--eq-dark), inset 0 1px #ffffff22}
+.equals:active{transform:translateY(3px);box-shadow:0 1px 0 var(--eq-dark)}
+.foot{text-align:center;color:#767b7c;font-size:10px;padding-top:2px}
+@media(min-height:780px){.calc{min-height:0;height:min(94dvh,850px);border-radius:20px}.keys{grid-auto-rows:minmax(56px,1fr)}}
+</style>
+</head>
+<body>
+<main class="calc">
+<header class="top">
+<div class="brand"><span>COMPET • 20</span><small>PRECISION CALCULATOR</small></div>
+<div class="sub">۲۰ رقم نمایشی • محاسبات دقیق عددی</div>
+<div class="screen">
+<div class="history" id="history">آماده</div>
+<div class="display" id="display">0</div>
+</div>
+<div class="status"><span id="mem">MEM —</span><span id="digits">۰ / ۲۰ رقم</span></div>
+</header>
+<section class="keys" id="keys">
+<button class="key light" data-act="mc">MC</button>
+<button class="key blue" data-act="mr">MR</button>
+<button class="key blue" data-act="mplus">M+</button>
+<button class="key blue" data-act="mminus">M−</button>
+<button class="key red" data-act="clear">AC</button>
+
+<button class="key light" data-act="back">⌫</button>
+<button class="key light" data-act="sign">±</button>
+<button class="key light" data-act="percent">%</button>
+<button class="key light" data-act="sqrt">√</button>
+<button class="key op" data-act="divide">÷</button>
+
+<button class="key" data-num="7">7</button>
+<button class="key" data-num="8">8</button>
+<button class="key" data-num="9">9</button>
+<button class="key light" data-act="recip">1/x</button>
+<button class="key op" data-act="multiply">×</button>
+
+<button class="key" data-num="4">4</button>
+<button class="key" data-num="5">5</button>
+<button class="key" data-num="6">6</button>
+<button class="key op" data-act="minus">−</button>
+<button class="key op" data-act="plus">+</button>
+
+<button class="key" data-num="1">1</button>
+<button class="key" data-num="2">2</button>
+<button class="key" data-num="3">3</button>
+<button class="key light" data-act="sign">+/−</button>
+<button class="key equals" data-act="equals">=</button>
+
+<button class="key zero" data-num="0">0</button>
+<button class="key" data-act="dot">.</button>
+<button class="key light" data-act="clearentry">CE</button>
+<button class="key light" data-act="repeat">↻</button>
+</section>
+<div class="foot">ماشین‌حساب ۲۰ رقمی • مناسب استفاده روزمره و محاسبات مالی</div>
+</main>
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+let entry='0',stored=null,op=null,reset=false,memory='0',lastOp=null,lastVal=null,err=false;
+const norm=s=>{if(!s||s==='-')return s||'0';if(s.includes('.'))s=s.replace(/0+$/,'').replace(/\.$/,'');return s==='-0'?'0':s};
+function dec(s){s=String(s);let neg=s[0]==='-';if(neg)s=s.slice(1);let [a,b='']=s.split('.');return {n:BigInt((a||'0')+b)*(neg?-1n:1n),scale:b.length}}
+function fmt(n,scale){let neg=n<0n;if(neg)n=-n;let s=n.toString().padStart(scale+1,'0');if(scale)s=s.slice(0,-scale)+'.'+s.slice(-scale);return norm((neg?'-':'')+s)}
+function calc(a,b,o){let x=dec(a),y=dec(b),sc=Math.max(x.scale,y.scale),X=x.n*10n**BigInt(sc-x.scale),Y=y.n*10n**BigInt(sc-y.scale);if(o==='+')return fmt(X+Y,sc);if(o==='−')return fmt(X-Y,sc);if(o==='×')return fmt(x.n*y.n,x.scale+y.scale);if(o==='÷'){if(Y===0n)throw Error();let precision=12;return fmt((X*10n**BigInt(precision))/Y,sc+precision)}return b}
+function shown(){
+let s=entry;let digits=s.replace(/[-.]/g,'').length;
+if(digits>20){s=s.slice(0,20+(s[0]==='-'?1:0));entry=s}
+const parts=entry.split('.');const negative=parts[0].startsWith('-');
+let whole=negative?parts[0].slice(1):parts[0];
+whole=whole.replace(/\B(?=(\d{3})+(?!\d))/g,',');
+const formatted=(negative?'-':'')+whole+(parts.length>1?'.'+parts.slice(1).join('.'):'');
+$('display').textContent=err?'خطا':formatted;
+$('history').textContent=op&&stored!==null?stored+' '+op:' ';
+$('mem').textContent='MEM '+(memory==='0'?'—':'●');
+$('digits').textContent=digits.toLocaleString('fa-IR')+' / ۲۰ رقم';
+}
+function input(n){
+if(err){entry='0';err=false}
+if(reset){entry=n==='.'?'0.':n;reset=false}
+else if(n==='.'){if(!entry.includes('.'))entry+='.'}
+else if(entry==='0')entry=n;
+else if(entry==='-0')entry='-'+n;
+else entry+=n;
+shown()
+}
+function choose(o){if(err)return;if(op&&!reset)equals();stored=entry;op=o;reset=true;shown()}
+function equals(){
+if(op===null){if(lastOp){try{entry=calc(entry,lastVal,lastOp)}catch(e){err=true}}return shown()}
+try{let b=entry;entry=calc(stored,b,op);lastOp=op;lastVal=b;stored=null;op=null;reset=true}
+catch(e){err=true;entry='0'}
+shown()
+}
+function action(a){
+if(a==='clear'){entry='0';stored=null;op=null;lastOp=null;lastVal=null;reset=false;err=false}
+else if(a==='clearentry'){entry='0';err=false}
+else if(a==='back'){entry=entry.length>1?entry.slice(0,-1):'0';if(entry==='-')entry='0'}
+else if(a==='dot')input('.');
+else if(a==='plus'||a==='minus'||a==='multiply'||a==='divide')choose(({plus:'+',minus:'−',multiply:'×',divide:'÷'})[a]);
+else if(a==='equals')equals();
+else if(a==='sign'){if(entry!=='0')entry=entry[0]==='-'?entry.slice(1):'-'+entry}
+else if(a==='percent'){try{entry=fmt(dec(entry).n,dec(entry).scale+2)}catch(e){}}
+else if(a==='sqrt'){let v=Number(entry);if(v<0)err=true;else entry=String(Math.sqrt(v))}
+else if(a==='recip'){if(Number(entry)===0)err=true;else entry=String(1/Number(entry))}
+else if(a==='mc')memory='0';
+else if(a==='mr'){entry=memory;reset=true}
+else if(a==='mplus'||a==='mminus'){try{memory=calc(memory,entry,a==='mplus'?'+':'−')}catch(e){err=true}}
+else if(a==='repeat'){if(lastOp)equals()}
+shown()
+}
+$('keys').addEventListener('click',e=>{let b=e.target.closest('button');if(!b)return;if(b.dataset.num!==undefined)input(b.dataset.num);else action(b.dataset.act)});
+document.addEventListener('keydown',e=>{
+if(/^[0-9]$/.test(e.key))input(e.key);
+else if(e.key==='.')input('.');
+else if(e.key==='Enter'||e.key==='=')action('equals');
+else if(e.key==='Backspace')action('back');
+else if(e.key==='Escape')action('clear');
+else if(['+','-','*','/'].includes(e.key))choose(({'+':'+','-':'−','*':'×','/':'÷'})[e.key])
+});
+shown();
+
+// ثبت Service Worker برای PWA
+if('serviceWorker' in navigator){
+  const swCode=`self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>self.clients.claim());self.addEventListener('fetch',e=>{});`;
+  const blob=new Blob([swCode],{type:'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
+}
+})();
+</script>
+</body>
+</html>
